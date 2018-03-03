@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿//using UnityEditor;
 using UnityEngine;
 
 public class ShipController : MonoBehaviour
@@ -8,7 +6,11 @@ public class ShipController : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
     public GameObject LeftThrottle, RightThrottle, MainThrottle;
     public GameObject LeftEngine, RightEngine;
+    public GameObject Explosion;
     private EllipsoidParticleEmitter _leftParticle, _rightParticle;
+    private Vector3 _initialPosition;
+    private Quaternion _initialRotation;
+
     private void Awake()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
@@ -22,6 +24,8 @@ public class ShipController : MonoBehaviour
 
     void Start()
     {
+        _initialPosition = gameObject.transform.position;
+        _initialRotation = gameObject.transform.rotation;
     }
 
     // Update is called once per frame
@@ -69,10 +73,38 @@ public class ShipController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.relativeVelocity.magnitude > 5)
+        if (other.relativeVelocity.magnitude > 5 )
         {
-            Debug.Log("Boom with speed: "+other.relativeVelocity.magnitude);
+            var explosion = Instantiate(Explosion);
+            explosion.transform.position = gameObject.transform.position;
+            gameObject.SetActive(false);
+            Invoke("Reinit",2f);
+            Destroy(explosion,2f);
+        }
+
+       
+    }
+
+    private void OnCollisionStay2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Finish"))
+        {
+            //other.relativeVelocity.magnitude
+           /* if (
+                EditorUtility.DisplayDialog("You won",
+                    "Congratulations, you successfully finished the game", "Thanks", "Don't care"))
+            {
+               
+            }*/
+            Reinit();
         }
     }
 
+    void Reinit()
+    {
+        gameObject.transform.position = _initialPosition;
+        gameObject.transform.rotation = _initialRotation;
+        gameObject.SetActive(true);
+        
+    }
 }

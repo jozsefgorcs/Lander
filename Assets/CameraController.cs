@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using NUnit.Framework.Constraints;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -26,6 +22,9 @@ public class CameraController : MonoBehaviour
 		
 	}
 	void LateUpdate () {
-		transform.position = player.transform.position + offset;
+		if (player != null)
+		{
+			transform.position = player.transform.position + offset;
+		}
 	}
 }
