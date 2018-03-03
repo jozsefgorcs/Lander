@@ -46,11 +46,25 @@ public class ShipController : MonoBehaviour
             _rightParticle.emit = true;
         }
 
-        var relativeForce = Vector2.up * moveVertical*60f;
+        if (moveHorizontal == 0 && moveVertical == 0)
+        {
+            _leftParticle.emit = false;
+            _rightParticle.emit = false;
+        }
+
+        var relativeForce = Vector2.up * moveVertical*30f;
         //var sideForce = Vector2.left * moveHorizontal * 30f;
         Debug.Log("Relative force: "+relativeForce);
         _rigidbody2D.AddRelativeForce(relativeForce);
-        _rigidbody2D.AddTorque(moveHorizontal * 3f);
+        _rigidbody2D.AddTorque(moveHorizontal * 1f);
        // _rigidbody2D.AddForceAtPosition(new Vector2(20,moveVertical*30f),throttlePosition );        
+    }
+    
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.relativeVelocity.magnitude > 2)
+        {
+            Debug.Log("Boom");
+        }
     }
 }
